@@ -5,6 +5,7 @@ class PlaylistGUI:
     def __init__(self, root, callback):
         self.root = root
         self.root.title("Create Playlist")
+        self.root.geometry("250x100+100+100")
 
         # Initialize database operations
         self.db = Database()
@@ -14,13 +15,13 @@ class PlaylistGUI:
 
         # Create GUI elements
         self.playlist_name_label = tk.Label(root, text="Playlist Name:")
-        self.playlist_name_label.pack(pady=10)
+        self.playlist_name_label.place(x=10, y=10)
 
         self.playlist_name_entry = tk.Entry(root)
-        self.playlist_name_entry.pack(pady=10)
+        self.playlist_name_entry.place(x=100, y=10)
 
         self.create_button = tk.Button(root, text="Create Playlist", command=self.create_playlist)
-        self.create_button.pack(pady=10)
+        self.create_button.place(x=80, y=40)
 
     def create_playlist(self):
         playlist_name = self.playlist_name_entry.get()
