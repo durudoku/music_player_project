@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from database import Database
 from main_page import MainPageGUI
+from src.add_song import AddSongApp
 
 
 class LoginGUI:
@@ -36,14 +37,21 @@ class LoginGUI:
         email = self.entry_email.get()
         password = self.entry_password.get()
 
-        if Database.check_credentials(email, password):
-            messagebox.showinfo("Success", "Login successful.")
+        if(email == "admin" and password == "admin"):
+            messagebox.showinfo("Admin", "Directing to Song Addition Page.")
             self.root.destroy()
-            main_page_root = tk.Tk()
-            MainPageGUI(main_page_root)
-            main_page_root.mainloop()
+            add_song = tk.Tk()
+            AddSongApp(add_song)
+            add_song.mainloop()
         else:
-            messagebox.showerror("Error", "Invalid email or password.")
+            if Database.check_credentials(email, password):
+                messagebox.showinfo("Success", "Login successful.")
+                self.root.destroy()
+                main_page_root = tk.Tk()
+                MainPageGUI(main_page_root)
+                main_page_root.mainloop()
+            else:
+                messagebox.showerror("Error", "Invalid email or password.")
 
     def go_to_signup(self):
         from signup import SignUpGUI  # Import the class only when needed

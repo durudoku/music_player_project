@@ -37,19 +37,6 @@ class Database:
         playlists = cursor.fetchall()
         return playlists
 
-    # Song Operations
-    def create_table_songs(self):
-        connection = self.song_conn
-        cursor = connection.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, name TEXT, artist TEXT, playlist TEXT)")
-        connection.commit()
-
-    def create_table_playlist_songs(self):
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS playlist_songs (playlist_id INTEGER, song_id INTEGER, FOREIGN KEY(playlist_id) REFERENCES playlists(id), FOREIGN KEY(song_id) REFERENCES songs(id), PRIMARY KEY(playlist_id, song_id))")
-        self.conn.commit()
-
     def fetch_songs_for_playlist_id(self, playlist_id):
         cursor = self.playlist_conn.cursor()
         cursor.execute("SELECT * FROM playlists WHERE id=?", (playlist_id,))
@@ -59,6 +46,85 @@ class Database:
         else:
             return None
 
+    # Song Operations
+    def create_table_songs(self):
+        cursor = self.song_conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS songs (
+                id INTEGER PRIMARY KEY,
+                track_name TEXT,
+                artist_name TEXT,
+                album_name TEXT,
+                duration_ms INTEGER,
+                file_path TEXT
+            )
+        ''')
+        self.song_conn.commit()
+
+    def create_table_playlist_songs(self):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS playlist_songs (playlist_id INTEGER, song_id INTEGER, FOREIGN KEY(playlist_id) REFERENCES playlists(id), FOREIGN KEY(song_id) REFERENCES songs(id), PRIMARY KEY(playlist_id, song_id))")
+        self.conn.commit()
+
+    def fetch_songs(self):
+        cursor = self.song_conn.cursor()
+        cursor.execute("SELECT * FROM songs")
+        return cursor.fetchall()
+
+    def fetch_playlists(self):
+        cursor = self.playlist_conn.cursor()
+        cursor.execute("SELECT * FROM playlists")
+        return cursor.fetchall()
+
+    def get_song_by_track_name(self, track_name):
+        cursor = self.song_conn.cursor()
+        cursor.execute('SELECT * FROM songs WHERE track_name = ?', (track_name,))
+        return cursor.fetchone()
+
+    def get_song_by_id(self, song_id):
+        cursor = self.song_conn.cursor()
+        cursor.execute('SELECT * FROM songs WHERE id = ?', (song_id,))
+        return cursor.fetchone()
+
+    def update_or_save_song(self, song_id, track_name, artist_name, album_name, duration_ms, file_path):
+        existing_song = self.get_song_by_id(song_id)
+
+        if existing_song:
+            # Song already exists, update the existing record
+            self.update_song(song_id, track_name, artist_name, album_name, duration_ms, file_path)
+        else:
+            # Song doesn't exist, create a new record
+            self.save_song(track_name, artist_name, album_name, duration_ms, file_path)
+
+    def save_song(self, track_name, artist_name, album_name, duration_ms, file_path):
+        cursor = self.song_conn.cursor()
+        cursor.execute('''
+            INSERT INTO songs (track_name, artist_name, album_name, duration_ms, file_path)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (track_name, artist_name, album_name, duration_ms, file_path))
+        self.song_conn.commit()
+
+    def update_song(self, song_id, track_name, artist_name, album_name, duration_ms, file_path):
+        cursor = self.song_conn.cursor()
+        cursor.execute('''
+            UPDATE songs
+            SET track_name=?, artist_name=?, album_name=?, duration_ms=?, file_path=?
+            WHERE id=?
+        ''', (track_name, artist_name, album_name, duration_ms, file_path, song_id))
+        self.song_conn.commit()
+
+    def get_all_songs(self):
+        cursor = self.song_conn.cursor()
+        cursor.execute('SELECT * FROM songs')
+        return cursor.fetchall()
+
+    def delete_song(self, song_id):
+        cursor = self.song_conn.cursor()
+        cursor.execute('DELETE FROM songs WHERE id = ?', (song_id,))
+        self.song_conn.commit()
+
+    # User Operations
     @staticmethod
     def create_table_users():
         connection = sqlite3.connect("users.db")
