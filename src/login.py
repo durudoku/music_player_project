@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import messagebox
 from database import Database
 from main_page import MainPageGUI
-from src.add_song import AddSongApp
-import re
+
+from src.admin_page import AdminPage
 
 
 class LoginGUI:
@@ -41,11 +41,11 @@ class LoginGUI:
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         if(email == "admin" and password == "admin"):
-            messagebox.showinfo("Admin", "Directing to Song Addition Page.")
+            messagebox.showinfo("Admin", "Directing to Admin Page.")
             self.root.destroy()
-            add_song = tk.Tk()
-            AddSongApp(add_song)
-            add_song.mainloop()
+            admin_page = tk.Tk()
+            AdminPage(admin_page)
+            admin_page.mainloop()
         else:
             if Database.check_credentials(email, hashed_password):
                 messagebox.showinfo("Success", "Login successful.")

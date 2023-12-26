@@ -84,6 +84,18 @@ class MainPageGUI:
         # Fetch data from the database
         songs = self.db.fetch_songs()
 
+    def load_songs(self):
+        # Fetch song IDs for the selected playlist from the database
+        if self.selected_playlist_id != None:
+            playlist_songs = self.db.get_playlist_songs(self.selected_playlist_id)
+
+            for item in self.song_tree.get_children():
+                self.song_tree.delete(item)
+
+            for song_id in playlist_songs:
+                song_details = self.db.get_song_by_id(song_id)
+                self.song_tree.insert("", "end", values=song_details)
+
     def show_add_playlist_gui(self):
         # Create a new window for adding a playlist
         add_playlist_window = tk.Toplevel(self.root)
@@ -116,18 +128,6 @@ class MainPageGUI:
 
             # Update the playlist treeview
             self.populate_playlists()
-
-    def load_songs(self):
-        # Fetch song IDs for the selected playlist from the database
-        if self.selected_playlist_id != None:
-            playlist_songs = self.db.get_playlist_songs(self.selected_playlist_id)
-
-            for item in self.song_tree.get_children():
-                self.song_tree.delete(item)
-
-            for song_id in playlist_songs:
-                song_details = self.db.get_song_by_id(song_id)
-                self.song_tree.insert("", "end", values=song_details)
 
     def load_songs_for_selected_playlist(self):
         selected_item = self.playlist_tree.selection()

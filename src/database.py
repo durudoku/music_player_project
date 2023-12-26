@@ -1,12 +1,10 @@
 import sqlite3
-import json
 
 class Database:
     def __init__(self):
         self.user_conn = sqlite3.connect("users.db")
         self.playlist_conn = sqlite3.connect("playlist.db")
         self.song_conn = sqlite3.connect("song.db")
-        self.conn = sqlite3.connect("music.db")
 
     def create_tables(self):
         self.create_table_users()
@@ -63,12 +61,6 @@ class Database:
             )
         ''')
         self.song_conn.commit()
-
-    def create_table_playlist_songs(self):
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS playlist_songs (playlist_id INTEGER, song_id INTEGER, FOREIGN KEY(playlist_id) REFERENCES playlists(id), FOREIGN KEY(song_id) REFERENCES songs(id), PRIMARY KEY(playlist_id, song_id))")
-        self.conn.commit()
 
     def fetch_songs(self):
         cursor = self.song_conn.cursor()
@@ -140,41 +132,46 @@ class Database:
 
 
     # User Operations
-    @staticmethod
-    def create_table_users():
-        connection = sqlite3.connect("users.db")
-        cursor = connection.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT, password TEXT)"
-        )
-        connection.commit()
-        connection.close()
+    def create_table_users(self):
+        cursor = self.user_conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                email TEXT,
+                password TEXT
+            )
+        ''')
+        self.user_conn.commit()
 
-    @staticmethod
-    def add_user(name, email, password):
-        connection = sqlite3.connect("users.db")
-        cursor = connection.cursor()
+    def add_user(self, name, email, password):
+        cursor = self.user_conn.cursor()
         cursor.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", (name, email, password))
-        connection.commit()
-        connection.close()
+        self.user_conn.commit()
 
-    @staticmethod
-    def check_email_exists(email):
-        connection = sqlite3.connect("users.db")
-        cursor = connection.cursor()
+    def check_email_exists(self, email):
+        cursor = self.user_conn.cursor()
         cursor.execute("SELECT * FROM users WHERE email=?", (email,))
         user = cursor.fetchone()
-        connection.close()
+        self.user_conn.commit()
         return user is not None
 
-    @staticmethod
-    def check_credentials(email, password):
-        connection = sqlite3.connect("users.db")
-        cursor = connection.cursor()
+    def check_credentials(self, email, password):
+        cursor = self.user_conn.cursor()
         cursor.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
         user = cursor.fetchone()
-        connection.close()
+        self.user_conn.commit()
         return user is not None
+
+    def get_all_users(self):
+        cursor = self.user_conn.cursor()
+        cursor.execute("SELECT * FROM users")
+        return cursor.fetchall()
+
+    def remove_user(self, user_id):
+        cursor = self.user_conn.cursor()
+        cursor.execute("DELETE FROM users WHERE id=?", (user_id,))
+        self.user_conn.commit()
 
 if __name__ == "__main__":
     db_instance = Database()
