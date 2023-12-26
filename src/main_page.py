@@ -8,38 +8,46 @@ from src.audio_player import AudioPlayer
 class MainPageGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("Main Page")
+        self.root.title("Music Player")
         self.root.geometry("900x300+100+100")
+        self.root.iconbitmap("music.ico")
 
         self.db = Database()
 
+        self.setup_ui()
+
+        self.populate_playlists()
+        self.populate_songs()
+
+    def setup_ui(self):
+
         # Playlists
-        self.label_playlists = tk.Label(root, text="Playlists")
+        self.label_playlists = tk.Label(self.root, text="Playlists")
         self.label_playlists.place(x=10, y=30)
 
-        self.playlist_tree = ttk.Treeview(root, columns=("ID", "Name"), show="headings", selectmode="browse")
+        self.playlist_tree = ttk.Treeview(self.root, columns=("ID", "Name"), show="headings", selectmode="browse")
         self.playlist_tree.heading("ID", text="ID")
         self.playlist_tree.heading("Name", text="Name")
         self.playlist_tree.column("ID", width=50)
         self.playlist_tree.column("Name", width=200)
         self.playlist_tree.place(x=10, y=50)
 
-        self.button_playlist_add = ttk.Button(root, text="+", width=5, command=self.show_add_playlist_gui)
+        self.button_playlist_add = ttk.Button(self.root, text="+", width=5, command=self.show_add_playlist_gui)
         self.button_playlist_add.place(x=270, y=65)
 
-        self.button_playlist_remove = ttk.Button(root, text="-", width=5, command=self.remove_selected_playlist)
+        self.button_playlist_remove = ttk.Button(self.root, text="-", width=5, command=self.remove_selected_playlist)
         self.button_playlist_remove.place(x=270, y=170)
 
         # Songs
-        self.label_songs = tk.Label(root, text="Songs")
+        self.label_songs = tk.Label(self.root, text="Songs")
         self.label_songs.place(x=330, y=30)
 
-        self.song_tree = ttk.Treeview(root, columns=("ID", "Track", "Artist", "Album", "Duration"), show="headings")
+        self.song_tree = ttk.Treeview(self.root, columns=("ID", "Track", "Artist", "Album", "Duration"), show="headings")
         self.song_tree.heading("ID", text="ID")
         self.song_tree.heading("Track", text="Track Name")
         self.song_tree.heading("Artist", text="Artist Name")
         self.song_tree.heading("Album", text="Album Name")
-        self.song_tree.heading("Duration", text="Duration (ms)")
+        self.song_tree.heading("Duration", text="Duration")
 
         self.song_tree.column("ID", width=30)
         self.song_tree.column("Track", width=150)
@@ -49,34 +57,38 @@ class MainPageGUI:
 
         self.song_tree.place(x=330, y=50)
 
-        self.button_song_add = ttk.Button(root, text="+", width=5, command=self.show_add_song_gui)
+        self.button_song_add = ttk.Button(self.root, text="+", width=5, command=self.show_add_song_gui)
         self.button_song_add.place(x=800, y=65)
 
-        self.button_song_remove = ttk.Button(root, text="-", width=5)
+        self.button_song_remove = ttk.Button(self.root, text="-", width=5)
         self.button_song_remove.place(x=800, y=170)
 
-        self.song_tree.bind("<Double-1>", self.play_selected_song)
+        self.song_tree.bind("<Double-1>", self.audio_player)  ##düzenle
         self.playlist_tree.bind("<ButtonRelease-1>", self.show_selected_playlist_songs)
 
-        # Populate playlists and songs
-        self.populate_playlists()
-        self.populate_songs()
+        self.load_songs()
 
+    def audio_player(self, event):
+        selected_item = self.song_tree.selection()
+        if selected_item:
+            file_path = self.song_tree.item(selected_item, "values")[5]
 
-    def play_selected_song(self, event):
-        item = self.song_tree.selection()[0]  # Get selected item
-        song_id = self.song_tree.item(item, "values")[0]  # Get the ID of the selected song
+            audio_player_root = tk.Toplevel(self.root)
+            audio_player = AudioPlayer(audio_player_root,
+                                       file_path=file_path)
 
-        # Fetch the file path of the selected song
-        self.cursor.execute("SELECT file_path FROM songs WHERE id=?", (song_id,))
-        file_path = self.cursor.fetchone()[0]
+    def load_songs(self):
+        # Clear existing items in the Treeview
+        for item in self.song_tree.get_children():
+            self.song_tree.delete(item)
 
-        # Close the database connection
-        self.conn.close()
+        # Fetch songs from the database
+        db = Database()
+        songs = db.get_all_songs()
 
-        # Open the AudioPlayer window and pass the file path
-        audio_player_window = tk.Toplevel(self.root)
-        audio_player = AudioPlayer(audio_player_window, file_path)
+        # Populate the Treeview with songs
+        for song in songs:
+            self.song_tree.insert("", "end", values=song)
 
     def populate_songs(self):
         # Clear existing items

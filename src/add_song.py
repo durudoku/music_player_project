@@ -8,7 +8,6 @@ class AddSongApp:
         self.root.title("Song Database")
 
         self.db = Database()
-
         self.db.create_table_songs()
 
         self.setup_ui()

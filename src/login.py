@@ -1,8 +1,10 @@
+import hashlib
 import tkinter as tk
 from tkinter import messagebox
 from database import Database
 from main_page import MainPageGUI
 from src.add_song import AddSongApp
+import re
 
 
 class LoginGUI:
@@ -36,6 +38,7 @@ class LoginGUI:
     def login(self):
         email = self.entry_email.get()
         password = self.entry_password.get()
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         if(email == "admin" and password == "admin"):
             messagebox.showinfo("Admin", "Directing to Song Addition Page.")
@@ -44,7 +47,7 @@ class LoginGUI:
             AddSongApp(add_song)
             add_song.mainloop()
         else:
-            if Database.check_credentials(email, password):
+            if Database.check_credentials(email, hashed_password):
                 messagebox.showinfo("Success", "Login successful.")
                 self.root.destroy()
                 main_page_root = tk.Tk()

@@ -72,6 +72,8 @@ class Database:
         cursor.execute("SELECT * FROM songs")
         return cursor.fetchall()
 
+
+
     def fetch_playlists(self):
         cursor = self.playlist_conn.cursor()
         cursor.execute("SELECT * FROM playlists")
