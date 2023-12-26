@@ -19,6 +19,8 @@ class MainPageGUI:
         self.populate_playlists()
         self.populate_songs()
 
+        self.current_audio_player = None
+
     def setup_ui(self):
 
         # Playlists
@@ -63,19 +65,27 @@ class MainPageGUI:
         self.button_song_remove = ttk.Button(self.root, text="-", width=5)
         self.button_song_remove.place(x=800, y=170)
 
-        self.song_tree.bind("<Double-1>", self.audio_player)  ##düzenle
+        self.song_tree.bind("<Double-1>", self.double_click_handler)
         self.playlist_tree.bind("<ButtonRelease-1>", self.show_selected_playlist_songs)
 
         self.load_songs()
 
-    def audio_player(self, event):
+    def double_click_handler(self, event):
         selected_item = self.song_tree.selection()
         if selected_item:
-            file_path = self.song_tree.item(selected_item, "values")[5]
+            # Get the file_path attribute directly
+            file_path = self.song_tree.item(selected_item, "values")[5]  # Assuming "File Path" is the 6th column (index 5)
 
+            # Close the current audio player window if it's open
+            if self.current_audio_player:
+                self.current_audio_player.on_close()
+
+            # Open the new audio player window and pass the reference to the MainPageApp instance
             audio_player_root = tk.Toplevel(self.root)
-            audio_player = AudioPlayer(audio_player_root,
-                                       file_path=file_path)
+            audio_player = AudioPlayer(audio_player_root, file_path=file_path, main_page_app=self)
+
+            # Update the currently open audio player window
+            self.current_audio_player = audio_player
 
     def load_songs(self):
         # Clear existing items in the Treeview
