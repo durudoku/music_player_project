@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 class Database:
     def __init__(self):
@@ -31,20 +32,22 @@ class Database:
         self.playlist_conn.commit()
 
     def fetch_playlists(self):
-        connection = self.playlist_conn
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM playlists")
-        playlists = cursor.fetchall()
-        return playlists
-
-    def fetch_songs_for_playlist_id(self, playlist_id):
         cursor = self.playlist_conn.cursor()
-        cursor.execute("SELECT * FROM playlists WHERE id=?", (playlist_id,))
-        playlist = cursor.fetchone()
-        if playlist:
-            return playlist[2]  # Assuming songs are stored in the third column (index 2)
+        cursor.execute("SELECT * FROM playlists")
+        return cursor.fetchall()
+
+    def get_playlist_songs(self, playlist_id):
+        # Retrieve song IDs for a playlist
+        cursor = self.playlist_conn.cursor()
+        cursor.execute('SELECT songs FROM playlists WHERE id=?', (playlist_id,))
+        result = cursor.fetchone()
+
+        if result and result[0]:
+            # Split the comma-separated string, filter out empty strings, and convert to a list of integers
+            song_ids = [int(song_id) for song_id in result[0].split(',') if song_id]
+            return song_ids
         else:
-            return None
+            return []
 
     # Song Operations
     def create_table_songs(self):
@@ -70,13 +73,6 @@ class Database:
     def fetch_songs(self):
         cursor = self.song_conn.cursor()
         cursor.execute("SELECT * FROM songs")
-        return cursor.fetchall()
-
-
-
-    def fetch_playlists(self):
-        cursor = self.playlist_conn.cursor()
-        cursor.execute("SELECT * FROM playlists")
         return cursor.fetchall()
 
     def get_song_by_track_name(self, track_name):
@@ -125,6 +121,23 @@ class Database:
         cursor = self.song_conn.cursor()
         cursor.execute('DELETE FROM songs WHERE id = ?', (song_id,))
         self.song_conn.commit()
+
+    def add_song_to_playlist(self, playlist_id, song_details):
+        cursor = self.playlist_conn.cursor()
+        cursor.execute('SELECT songs FROM playlists WHERE id=?', (playlist_id,))
+        playlist_songs = cursor.fetchone()
+
+        if playlist_songs:
+            # If the playlist has existing songs, update the songs list
+            playlist_songs = playlist_songs[0] + ',' + str(song_details['song_id'])
+            cursor.execute('UPDATE playlists SET songs=? WHERE id=?', (playlist_songs, playlist_id))
+        else:
+            # If the playlist has no existing songs, create a new list with the current song
+            cursor.execute('UPDATE playlists SET songs=? WHERE id=?', (str(song_details['song_id']), playlist_id))
+
+        # Commit the changes manually
+        self.playlist_conn.commit()
+
 
     # User Operations
     @staticmethod

@@ -3,6 +3,7 @@ from tkinter import scrolledtext, ttk
 from database import Database
 from playlist import PlaylistGUI
 from src.audio_player import AudioPlayer
+from src.search_song import SearchSongApp
 
 
 class MainPageGUI:
@@ -11,18 +12,14 @@ class MainPageGUI:
         self.root.title("Music Player")
         self.root.geometry("900x300+100+100")
         self.root.iconbitmap("music.ico")
-
         self.db = Database()
-
         self.setup_ui()
-
         self.populate_playlists()
         self.populate_songs()
-
         self.current_audio_player = None
+        self.selected_playlist_id = None
 
     def setup_ui(self):
-
         # Playlists
         self.label_playlists = tk.Label(self.root, text="Playlists")
         self.label_playlists.place(x=10, y=30)
@@ -66,9 +63,9 @@ class MainPageGUI:
         self.button_song_remove.place(x=800, y=170)
 
         self.song_tree.bind("<Double-1>", self.double_click_handler)
-        self.playlist_tree.bind("<ButtonRelease-1>", self.show_selected_playlist_songs)
+        #self.playlist_tree.bind("<ButtonRelease-1>", self.show_selected_playlist_songs)
+        self.playlist_tree.bind("<ButtonRelease-1>", lambda event: self.load_songs_for_selected_playlist())
 
-        self.load_songs()
 
     def double_click_handler(self, event):
         selected_item = self.song_tree.selection()
@@ -88,17 +85,26 @@ class MainPageGUI:
             self.current_audio_player = audio_player
 
     def load_songs(self):
-        # Clear existing items in the Treeview
-        for item in self.song_tree.get_children():
-            self.song_tree.delete(item)
+        # Fetch song IDs for the selected playlist from the database
+        if self.selected_playlist_id != None:
+            playlist_songs = self.db.get_playlist_songs(self.selected_playlist_id)
 
-        # Fetch songs from the database
-        db = Database()
-        songs = db.get_all_songs()
+            for item in self.song_tree.get_children():
+                self.song_tree.delete(item)
 
-        # Populate the Treeview with songs
-        for song in songs:
-            self.song_tree.insert("", "end", values=song)
+            for song_id in playlist_songs:
+                song_details = self.db.get_song_by_id(song_id)
+                self.song_tree.insert("", "end", values=song_details)
+
+    def load_songs_for_selected_playlist(self):
+        selected_item = self.playlist_tree.selection()
+        if selected_item:
+            self.selected_playlist_id = int(
+                self.playlist_tree.item(selected_item, "values")[0])  # Assuming the ID is in the first column
+
+            # Load songs for the selected playlist
+            self.load_songs()
+
 
     def populate_songs(self):
         # Clear existing items
@@ -107,10 +113,6 @@ class MainPageGUI:
 
         # Fetch data from the database
         songs = self.db.fetch_songs()
-
-        # Insert data into Treeview
-        for song in songs:
-            self.song_tree.insert("", "end", values=song)
 
     def populate_playlists(self):
         # Clear existing content in the playlist treeview
@@ -121,25 +123,9 @@ class MainPageGUI:
 
         # Display playlists in the treeview
         for playlist in playlists:
-            self.playlist_tree.insert("", "end", values=(playlist[0], playlist[1]))
+            self.playlist_tree.insert("", "end", values=playlist)
 
-    def show_selected_playlist_songs(self, event):
-        for item in self.song_tree.get_children():
-            self.song_tree.delete(item)
 
-            # Get the selected playlist from the Treeview
-        selected_item = self.playlist_tree.selection()
-
-        if selected_item:
-            # Get the playlist ID from the selected item
-            playlist_id = self.playlist_tree.item(selected_item, "values")[0]
-
-            # Fetch songs for the selected playlist from the database
-            songs = self.db.fetch_songs_for_playlist_id(playlist_id)
-
-            # Insert songs into the Treeview
-            for song in songs:
-                self.song_tree.insert("", "end", values=song)
 
     def show_add_playlist_gui(self):
         # Create a new window for adding a playlist
@@ -150,7 +136,15 @@ class MainPageGUI:
         playlist_gui = PlaylistGUI(add_playlist_window, callback=self.populate_playlists)
 
     def show_add_song_gui(self):
-        pass
+        # Get the selected playlist's ID
+        selected_item = self.playlist_tree.selection()
+        if selected_item:
+            playlist_id = int(self.playlist_tree.item(selected_item, "values")[0])  # Assuming the ID is in the first column
+
+            # Open the search song GUI
+            search_song_root = tk.Toplevel(self.root)
+            search_song_app = SearchSongApp(search_song_root,
+                                            playlist_id=self.selected_playlist_id)  # Pass the selected playlist ID
 
     def remove_selected_playlist(self):
         # Get the selected item in the treeview

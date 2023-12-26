@@ -13,7 +13,7 @@ class AddSongApp:
         self.setup_ui()
         self.load_songs()
 
-    def setup_ui(self):
+    def setup_ui(self): 
         ttk.Label(self.root, text="Track Name:").pack()
         self.track_name_entry = ttk.Entry(self.root)
         self.track_name_entry.pack()
