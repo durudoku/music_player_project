@@ -8,8 +8,9 @@ class AudioPlayer:
         self.root.title("Audio Player")
         self.root.geometry("300x300+100+100")
 
-        file_path = "songs/" + file_path + ".mp3"
         image_path = "album_covers/" + file_path + ".jpg"
+        file_path = "songs/" + file_path + ".mp3"
+
 
         # Initialize Pygame
         pygame.init()
@@ -20,12 +21,15 @@ class AudioPlayer:
         # Play the song
         pygame.mixer.music.play()
 
-        self.image = Image.open(image_path)
-        self.photo = ImageTk.PhotoImage(self.image)
+        original_image = Image.open(image_path)
+        resized_image = original_image.copy()
+        resized_image.thumbnail((100, 100))
 
-        # Create a label to display the image
+        self.photo = ImageTk.PhotoImage(resized_image)
+
         self.image_label = tk.Label(root, image=self.photo)
         self.image_label.pack(padx=10, pady=10)
+
 
         # Button to stop the song
         stop_button = tk.Button(root, text="Stop", command=self.stop_song)
