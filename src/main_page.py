@@ -59,60 +59,11 @@ class MainPageGUI:
         self.button_song_add = ttk.Button(self.root, text="+", width=5, command=self.show_add_song_gui)
         self.button_song_add.place(x=800, y=65)
 
-        self.button_song_remove = ttk.Button(self.root, text="-", width=5)
+        self.button_song_remove = ttk.Button(self.root, text="-", width=5, command=self.remove_selected_songs)
         self.button_song_remove.place(x=800, y=170)
 
-        self.song_tree.bind("<Double-1>", self.double_click_handler)
-        #self.playlist_tree.bind("<ButtonRelease-1>", self.show_selected_playlist_songs)
+        self.song_tree.bind("<Double-1>", self.open_song_gui)
         self.playlist_tree.bind("<ButtonRelease-1>", lambda event: self.load_songs_for_selected_playlist())
-
-
-    def double_click_handler(self, event):
-        selected_item = self.song_tree.selection()
-        if selected_item:
-            # Get the file_path attribute directly
-            file_path = self.song_tree.item(selected_item, "values")[5]  # Assuming "File Path" is the 6th column (index 5)
-
-            # Close the current audio player window if it's open
-            if self.current_audio_player:
-                self.current_audio_player.on_close()
-
-            # Open the new audio player window and pass the reference to the MainPageApp instance
-            audio_player_root = tk.Toplevel(self.root)
-            audio_player = AudioPlayer(audio_player_root, file_path=file_path, main_page_app=self)
-
-            # Update the currently open audio player window
-            self.current_audio_player = audio_player
-
-    def load_songs(self):
-        # Fetch song IDs for the selected playlist from the database
-        if self.selected_playlist_id != None:
-            playlist_songs = self.db.get_playlist_songs(self.selected_playlist_id)
-
-            for item in self.song_tree.get_children():
-                self.song_tree.delete(item)
-
-            for song_id in playlist_songs:
-                song_details = self.db.get_song_by_id(song_id)
-                self.song_tree.insert("", "end", values=song_details)
-
-    def load_songs_for_selected_playlist(self):
-        selected_item = self.playlist_tree.selection()
-        if selected_item:
-            self.selected_playlist_id = int(
-                self.playlist_tree.item(selected_item, "values")[0])  # Assuming the ID is in the first column
-
-            # Load songs for the selected playlist
-            self.load_songs()
-
-
-    def populate_songs(self):
-        # Clear existing items
-        for item in self.song_tree.get_children():
-            self.song_tree.delete(item)
-
-        # Fetch data from the database
-        songs = self.db.fetch_songs()
 
     def populate_playlists(self):
         # Clear existing content in the playlist treeview
@@ -125,7 +76,13 @@ class MainPageGUI:
         for playlist in playlists:
             self.playlist_tree.insert("", "end", values=playlist)
 
+    def populate_songs(self):
+        # Clear existing items
+        for item in self.song_tree.get_children():
+            self.song_tree.delete(item)
 
+        # Fetch data from the database
+        songs = self.db.fetch_songs()
 
     def show_add_playlist_gui(self):
         # Create a new window for adding a playlist
@@ -159,6 +116,49 @@ class MainPageGUI:
 
             # Update the playlist treeview
             self.populate_playlists()
+
+    def load_songs(self):
+        # Fetch song IDs for the selected playlist from the database
+        if self.selected_playlist_id != None:
+            playlist_songs = self.db.get_playlist_songs(self.selected_playlist_id)
+
+            for item in self.song_tree.get_children():
+                self.song_tree.delete(item)
+
+            for song_id in playlist_songs:
+                song_details = self.db.get_song_by_id(song_id)
+                self.song_tree.insert("", "end", values=song_details)
+
+    def load_songs_for_selected_playlist(self):
+        selected_item = self.playlist_tree.selection()
+        if selected_item:
+            self.selected_playlist_id = int(
+                self.playlist_tree.item(selected_item, "values")[0])  # Assuming the ID is in the first column
+
+            # Load songs for the selected playlist
+            self.load_songs()
+
+    def remove_selected_songs(self):
+        pass
+
+    def open_song_gui(self, event):
+        selected_item = self.song_tree.selection()
+        if selected_item:
+            # Get the file_path attribute directly
+            file_path = self.song_tree.item(selected_item, "values")[5]  # Assuming "File Path" is the 6th column (index 5)
+
+            # Close the current audio player window if it's open
+            if self.current_audio_player:
+                self.current_audio_player.on_close()
+
+            # Open the new audio player window and pass the reference to the MainPageApp instance
+            audio_player_root = tk.Toplevel(self.root)
+            audio_player = AudioPlayer(audio_player_root, file_path=file_path, main_page_app=self)
+
+            # Update the currently open audio player window
+            self.current_audio_player = audio_player
+
+
 
 
 if __name__ == "__main__":

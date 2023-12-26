@@ -58,16 +58,14 @@ class AddSongApp:
         self.tree.column("Duration", width=80)
         self.tree.column("File Path", width=200)
 
-        self.tree.bind("<Double-1>", self.edit_selected_song)
-
         self.file_path_details = scrolledtext.ScrolledText(self.root, wrap=tk.WORD, width=40, height=5)
         self.file_path_details.pack()
 
+        self.tree.bind("<Double-1>", self.edit_selected_song)
         self.file_path_details.bind("<Button-1>", self.clear_and_unfocus)
 
     def clear_and_unfocus(self, event):
         self.clear_entry_fields()
-
         self.tree.selection_remove(self.tree.selection())
 
     def load_songs(self):
