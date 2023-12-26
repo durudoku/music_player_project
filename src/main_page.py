@@ -4,6 +4,7 @@ from database import Database
 from playlist import PlaylistGUI
 from src.audio_player import AudioPlayer
 from src.search_song import SearchSongApp
+import gettext
 
 
 class MainPageGUI:
