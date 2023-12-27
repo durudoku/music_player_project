@@ -2,6 +2,7 @@ import tkinter as tk
 import pygame
 from PIL import Image, ImageTk
 
+
 class AudioPlayer:
     def __init__(self, root, file_path, main_page_app):
         self.root = root
@@ -13,12 +14,10 @@ class AudioPlayer:
         image_path = "album_covers/" + file_path + ".jpg"
         file_path = "songs/" + file_path + ".mp3"
 
-        # Pygame
         pygame.init()
         pygame.mixer.music.load(file_path)
         pygame.mixer.music.play()
 
-        # Image
         original_image = Image.open(image_path)
         resized_image = original_image.copy()
         resized_image.thumbnail((100, 100))
@@ -46,12 +45,12 @@ class AudioPlayer:
         pygame.mixer.music.stop()
         pygame.quit()
 
-        # Close the root window
+        # Close root window
         self.root.destroy()
 
-        # Update the reference in the MainPageApp to None
         if self.main_page_app:
             self.main_page_app.current_audio_player = None
+
 
 if __name__ == "__main__":
     root = tk.Tk()

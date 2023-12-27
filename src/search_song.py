@@ -1,7 +1,8 @@
 # search_song.py
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from database import Database
+
 
 class SearchSongApp:
     def __init__(self, root, playlist_id):
@@ -52,9 +53,13 @@ class SearchSongApp:
 
             # Save the song to the playlist
             db = Database()
-            db.add_song_to_playlist(self.playlist_id, song_details)
 
-            # Close the search song window
+            try:
+                db.add_song_to_playlist(self.playlist_id, song_details)
+            except DatabaseWarning as e:
+                # Display warning to the user
+                messagebox.showwarning("Song is already on the list!", str(e))
+
             self.root.destroy()
 
 if __name__ == "__main__":

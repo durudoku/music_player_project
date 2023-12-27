@@ -42,6 +42,8 @@ class SignUpGUI:
         self.login_button = tk.Button(root, text="Login", command=self.go_to_login)
         self.login_button.place(x=90, y=270)
 
+        self.db = Database()
+
     def sign_up(self):
         name = self.entry_name.get()
         email = self.entry_email.get()
@@ -64,10 +66,10 @@ class SignUpGUI:
             self.label_message.config(text="Invalid password.\nPlease follow the password requirements.")
         else:
             # Check if email already exists
-            if Database.check_email_exists(email):
+            if self.db.check_email_exists(email):
                 self.label_message.config(text="Email already exists.\nTry a different one.")
             else:
-                Database.add_user(name, email, hashed_password)
+                self.db.add_user(name, email, hashed_password)
                 messagebox.showinfo("Success", "Account created successfully.")
 
     def go_to_login(self):

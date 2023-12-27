@@ -2,13 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 
 from src.add_song import AddSongApp
-from src.songs.edit_user import EditUserApp
+from src.edit_user import EditUserApp
 
 class AdminPage:
     def __init__(self, root):
         self.root = root
         self.root.title("Admin Page")
-        self.root.geometry("230x300+100+100")
+        self.root.geometry("200x100+100+100")
 
         self.add_song_button = ttk.Button(root, text="Add Song", command=self.add_song_page)
         self.add_song_button.pack()

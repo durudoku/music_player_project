@@ -35,6 +35,8 @@ class LoginGUI:
         self.signup_button = tk.Button(root, text="Sign Up", command=self.go_to_signup)
         self.signup_button.place(x=80, y=200)
 
+        self.db = Database()
+
     def login(self):
         email = self.entry_email.get()
         password = self.entry_password.get()
@@ -47,7 +49,7 @@ class LoginGUI:
             AdminPage(admin_page)
             admin_page.mainloop()
         else:
-            if Database.check_credentials(email, hashed_password):
+            if self.db.check_credentials(email, hashed_password):
                 messagebox.showinfo("Success", "Login successful.")
                 self.root.destroy()
                 main_page_root = tk.Tk()

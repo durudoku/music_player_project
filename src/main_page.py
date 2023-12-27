@@ -4,7 +4,6 @@ from database import Database
 from playlist import PlaylistGUI
 from src.audio_player import AudioPlayer
 from src.search_song import SearchSongApp
-import gettext
 
 
 class MainPageGUI:
@@ -87,7 +86,7 @@ class MainPageGUI:
 
     def load_songs(self):
         # Fetch song IDs for the selected playlist from the database
-        if self.selected_playlist_id != None:
+        if self.selected_playlist_id is not None:
             playlist_songs = self.db.get_playlist_songs(self.selected_playlist_id)
 
             for item in self.song_tree.get_children():

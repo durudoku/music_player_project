@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 from database import Database
 
+
 class AddSongApp:
     def __init__(self, root):
         self.root = root
@@ -13,7 +14,7 @@ class AddSongApp:
         self.setup_ui()
         self.load_songs()
 
-    def setup_ui(self): 
+    def setup_ui(self):
         ttk.Label(self.root, text="Track Name:").pack()
         self.track_name_entry = ttk.Entry(self.root)
         self.track_name_entry.pack()
@@ -40,7 +41,9 @@ class AddSongApp:
         delete_button = ttk.Button(self.root, text="Delete", command=self.delete_song)
         delete_button.pack()
 
-        self.tree = ttk.Treeview(self.root, columns=("ID", "Track Name", "Artist Name", "Album Name", "Duration", "File Path"), show="headings")
+        self.tree = ttk.Treeview(self.root,
+                                 columns=("ID", "Track Name", "Artist Name", "Album Name", "Duration", "File Path"),
+                                 show="headings")
         self.tree.pack(pady=10)
 
         self.tree.heading("ID", text="ID")
@@ -50,7 +53,6 @@ class AddSongApp:
         self.tree.heading("Duration", text="Duration (ms)")
         self.tree.heading("File Path", text="File Path")
 
-        # Set column widths
         self.tree.column("ID", width=30)
         self.tree.column("Track Name", width=150)
         self.tree.column("Artist Name", width=150)
@@ -69,11 +71,11 @@ class AddSongApp:
         self.tree.selection_remove(self.tree.selection())
 
     def load_songs(self):
-        # Clear existing items in the Treeview
+        # Clear existing items
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        # Load existing songs from the database and populate the Treeview
+        # Load existing songs
         songs = self.db.get_all_songs()
         for song in songs:
             self.tree.insert("", "end", values=song)
@@ -131,18 +133,13 @@ class AddSongApp:
             self.file_path_details.insert(tk.END, song_details[5])
 
     def delete_song(self):
-        # Get selected items
         selected_items = self.tree.selection()
 
-        # Check if there are selected items
         if selected_items:
             item = self.tree.item(selected_items[0], "values")
             song_id = item[0]
 
-            # Delete the selected song
             self.db.delete_song(song_id)
-
-            # Reload songs after deletion
             self.load_songs()
 
 
