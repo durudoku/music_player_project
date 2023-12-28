@@ -17,14 +17,14 @@ class PlaylistGUI:
         self.callback = callback
 
         # Create GUI elements
-        self.playlist_name_label = tk.Label(root, text="Playlist Name:")
+        self.playlist_name_label = ctk.CTkLabel(root, text="Playlist Name:")
         self.playlist_name_label.place(x=10, y=10)
 
-        self.playlist_name_entry = tk.Entry(root)
+        self.playlist_name_entry = ctk.CTkEntry(root)
         self.playlist_name_entry.place(x=100, y=10)
 
-        self.create_button = tk.Button(root, text="Create Playlist", command=self.create_playlist)
-        self.create_button.place(x=80, y=40)
+        self.create_button = ctk.CTkButton(root, text="Create Playlist", command=self.create_playlist)
+        self.create_button.place(x=60, y=50)
 
     def create_playlist(self):
         playlist_name = self.playlist_name_entry.get()

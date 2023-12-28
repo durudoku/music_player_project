@@ -44,7 +44,6 @@ class SearchSongApp:
     def add_song_to_playlist(self):
         selected_item = self.song_tree.selection()
         if selected_item:
-            # Get the song details
             song_details = {
                 "song_id": self.song_tree.item(selected_item, "values")[0],
                 "track_name": self.song_tree.item(selected_item, "values")[1],

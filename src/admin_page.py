@@ -20,7 +20,7 @@ class AdminPage:
         self.edit_user_button.pack()
 
     def add_song_page(self):
-        add_song = ctk.Ctk()
+        add_song = ctk.CTk()
         AddSongApp(add_song)
         add_song.mainloop()
 
@@ -28,6 +28,7 @@ class AdminPage:
         edit_user = ctk.CTk()
         EditUserApp(edit_user)
         edit_user.mainloop()
+
 
 if __name__ == "__main__":
     root = ctk.CTk()

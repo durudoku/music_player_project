@@ -11,7 +11,7 @@ class MainPageGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Music Player")
-        self.root.geometry("900x300+100+100")
+        self.root.geometry("700x300+100+100")
         self.root.iconbitmap("icons/music.ico")
         self.db = Database()
         self.setup_ui()
@@ -24,7 +24,7 @@ class MainPageGUI:
     def setup_ui(self):
         # Playlists
         self.label_playlists = ctk.CTkLabel(self.root, text="Playlists")
-        self.label_playlists.place(x=10, y=30)
+        self.label_playlists.place(x=10, y=18)
 
         self.playlist_tree = ttk.Treeview(self.root, columns=("ID", "Name"), show="headings", selectmode="browse")
         self.playlist_tree.heading("ID", text="ID")
@@ -33,15 +33,15 @@ class MainPageGUI:
         self.playlist_tree.column("Name", width=200)
         self.playlist_tree.place(x=10, y=50)
 
-        self.button_playlist_add = ctk.CTkButton(self.root, text="+", width=5, command=self.show_add_playlist_gui)
-        self.button_playlist_add.place(x=270, y=65)
+        self.button_playlist_add = ctk.CTkButton(self.root, text="Create Playlist", width=5, command=self.show_add_playlist_gui)
+        self.button_playlist_add.place(x=10, y=230)
 
-        self.button_playlist_remove = ctk.CTkButton(self.root, text="-", width=5, command=self.remove_selected_playlist)
-        self.button_playlist_remove.place(x=270, y=170)
+        self.button_playlist_remove = ctk.CTkButton(self.root, text="Delete Playlist", width=5, command=self.remove_selected_playlist)
+        self.button_playlist_remove.place(x=110, y=230)
 
         # Songs
-        self.label_songs =  ctk.CTkLabel(self.root, text="Songs")
-        self.label_songs.place(x=330, y=30)
+        self.label_songs = ctk.CTkLabel(self.root, text="Songs")
+        self.label_songs.place(x=270, y=18)
 
         self.song_tree = ttk.Treeview(self.root, columns=("ID", "Track", "Artist", "Album", "Duration"), show="headings")
         self.song_tree.heading("ID", text="ID")
@@ -58,11 +58,11 @@ class MainPageGUI:
 
         self.song_tree.place(x=330, y=50)
 
-        self.button_song_add = ctk.CTkButton(self.root, text="+", width=5, command=self.show_add_song_gui)
-        self.button_song_add.place(x=800, y=65)
+        self.button_song_add = ctk.CTkButton(self.root, text="Add Song", width=5, command=self.show_add_song_gui)
+        self.button_song_add.place(x=265, y=230)
 
-        self.button_song_remove = ctk.CTkButton(self.root, text="-", width=5, command=self.remove_selected_songs)
-        self.button_song_remove.place(x=800, y=170)
+        self.button_song_remove = ctk.CTkButton(self.root, text="Delete Playlist", width=5, command=self.remove_selected_songs)
+        #self.button_song_remove.place(x=800, y=170)
 
         self.song_tree.bind("<Double-1>", self.open_song_gui)
         self.playlist_tree.bind("<ButtonRelease-1>", lambda event: self.load_songs_for_selected_playlist())
@@ -144,8 +144,8 @@ class MainPageGUI:
     def open_song_gui(self, event):
         selected_item = self.song_tree.selection()
         if selected_item:
-            # Get the file_path attribute directly
-            file_path = self.song_tree.item(selected_item, "values")[5]  # Assuming "File Path" is the 6th column (index 5)
+            file_path = self.song_tree.item(selected_item, "values")[5]
+            track_name = self.song_tree.item(selected_item, "values")[1]
 
             # Close the current audio player window if it's open
             if self.current_audio_player:
@@ -153,7 +153,7 @@ class MainPageGUI:
 
             # Open the new audio player window and pass the reference to the MainPageApp instance
             audio_player_root = tk.Toplevel(self.root)
-            audio_player = AudioPlayer(audio_player_root, file_path=file_path, main_page_app=self)
+            audio_player = AudioPlayer(audio_player_root, file_path=file_path, main_page_app=self, track_name=track_name)
 
             # Update the currently open audio player window
             self.current_audio_player = audio_player

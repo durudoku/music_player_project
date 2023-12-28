@@ -3,7 +3,6 @@ import re
 import tkinter as tk
 from tkinter import messagebox
 from database import Database
-from login import LoginGUI
 import customtkinter as ctk
 
 class SignUpGUI:
@@ -75,11 +74,7 @@ class SignUpGUI:
 
     def go_to_login(self):
         from login import LoginGUI
-
-        # Hide the main window
-        self.root.withdraw()
-
-        # Create the login window
+        self.root.destroy()
         login_root = ctk.CTk()
         login_gui = LoginGUI(login_root)
 
@@ -88,7 +83,6 @@ class SignUpGUI:
             login_root.after(1, login_root.destroy)  # Schedule destruction after a short delay
             self.root.deiconify()  # Bring back the main window
 
-        # Use the protocol on the Tk instance of the Toplevel window
         login_root.protocol("WM_DELETE_WINDOW", on_login_window_close)
         login_root.mainloop()
 
