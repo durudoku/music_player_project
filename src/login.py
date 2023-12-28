@@ -17,7 +17,11 @@ class LoginGUI:
         self.root.title("Login")
         self.root.geometry("250x300+100+100")
         self.root.iconbitmap("icons/music.ico")
+        self.setup_ui()
+        self.db = Database()
+        self.bind_widgets()
 
+    def setup_ui(self):
         self.selected_language = tk.StringVar(value="en")
         self.i18n = langpack.I18N(self.selected_language.get())
 
@@ -48,8 +52,6 @@ class LoginGUI:
                                           command=lambda: self.reload_gui_text("en"))
         self.context_menu.add_radiobutton(label="Türkçe", variable=self.selected_language, value="tr",
                                           command=lambda: self.reload_gui_text("tr"))
-        self.db = Database()
-        self.bind_widgets()
 
     def bind_widgets(self):
         self.root.bind("<Button-3>", self.show_context_menu)
