@@ -2,14 +2,17 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database import Database
+import customtkinter as ctk
 
 
 class SearchSongApp:
     def __init__(self, root, playlist_id):
         self.root = root
         self.root.title("Search Songs")
+        self.root.iconbitmap("icons/music.ico")
         self.playlist_id = playlist_id
         self.setup_ui()
+        self.db = Database()
 
     def setup_ui(self):
         # Create Treeview with columns
@@ -52,17 +55,12 @@ class SearchSongApp:
             }
 
             # Save the song to the playlist
-            db = Database()
-
-            try:
-                db.add_song_to_playlist(self.playlist_id, song_details)
-            except DatabaseWarning as e:
-                # Display warning to the user
-                messagebox.showwarning("Song is already on the list!", str(e))
+            self.db.add_song_to_playlist(self.playlist_id, song_details)
 
             self.root.destroy()
 
+
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     app = SearchSongApp(root, playlist_id=1)  # Replace 1 with the actual playlist ID
     root.mainloop()

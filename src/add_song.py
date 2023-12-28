@@ -1,12 +1,14 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 from database import Database
+import customtkinter as ctk
 
 
 class AddSongApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Song Database")
+        self.root.iconbitmap("icons/music.ico")
 
         self.db = Database()
         self.db.create_table_songs()
@@ -144,6 +146,6 @@ class AddSongApp:
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     app = AddSongApp(root)
     root.mainloop()

@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 from database import Database
 from main_page import MainPageGUI
-
+import customtkinter as ctk
 from src.admin_page import AdminPage
 
 
@@ -11,29 +11,30 @@ class LoginGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Login")
-        self.root.geometry("230x300+100+100")
+        self.root.geometry("250x300+100+100")
+        self.root.iconbitmap("icons/music.ico")
 
-        self.label_welcome = tk.Label(root, text="Login")
+        self.label_welcome = ctk.CTkLabel(root, text="Login")
         self.label_welcome.place(x=100, y=30)
 
-        self.label_email = tk.Label(root, text="Email:")
+        self.label_email = ctk.CTkLabel(root, text="Email:")
         self.label_email.place(x=10, y=60)
-        self.entry_email = tk.Entry(root)
+        self.entry_email = ctk.CTkEntry(root)
         self.entry_email.place(x=80, y=60)
 
-        self.label_password = tk.Label(root, text="Password:")
+        self.label_password = ctk.CTkLabel(root, text="Password:")
         self.label_password.place(x=10, y=100)
-        self.entry_password = tk.Entry(root, show="*")
+        self.entry_password = ctk.CTkEntry(root, show="*")
         self.entry_password.place(x=80, y=100)
 
-        self.login_button = tk.Button(root, text="Login", command=self.login)
-        self.login_button.place(x=110, y=130)
+        self.login_button = ctk.CTkButton(root, text="Login", command=self.login)
+        self.login_button.place(x=60, y=140)
 
-        self.label_signup = tk.Label(root, text="Don't have an account?")
+        self.label_signup = ctk.CTkLabel(root, text="Don't have an account?")
         self.label_signup.place(x=50, y=180)
 
-        self.signup_button = tk.Button(root, text="Sign Up", command=self.go_to_signup)
-        self.signup_button.place(x=80, y=200)
+        self.signup_button = ctk.CTkButton(root, text="Sign Up", command=self.go_to_signup)
+        self.signup_button.place(x=60, y=210)
 
         self.db = Database()
 
@@ -45,7 +46,7 @@ class LoginGUI:
         if(email == "admin" and password == "admin"):
             messagebox.showinfo("Admin", "Directing to Admin Page.")
             self.root.destroy()
-            admin_page = tk.Tk()
+            admin_page = ctk.CTk()
             AdminPage(admin_page)
             admin_page.mainloop()
         else:
@@ -61,11 +62,11 @@ class LoginGUI:
     def go_to_signup(self):
         from signup import SignUpGUI  # Import the class only when needed
         self.root.destroy()
-        signup_root = tk.Tk()
+        signup_root = ctk.CTk()
         signup_gui = SignUpGUI(signup_root)
         signup_root.mainloop()
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     login_gui = LoginGUI(root)
     root.mainloop()

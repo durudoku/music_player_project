@@ -1,11 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 from src.database import Database  # Import your Database class from database.py
+import customtkinter as ctk
 
 class EditUserApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Edit Users")
+        self.root.iconbitmap("icons/music.ico")
+
         self.db = Database()
 
         self.setup_ui()
@@ -55,6 +58,6 @@ class EditUserApp:
         self.populate_users()
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     app = EditUserApp(root)
     root.mainloop()

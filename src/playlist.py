@@ -1,10 +1,13 @@
 import tkinter as tk
 from database import Database
+import customtkinter as ctk
+
 
 class PlaylistGUI:
     def __init__(self, root, callback):
         self.root = root
         self.root.title("Create Playlist")
+        self.root.iconbitmap("icons/music.ico")
         self.root.geometry("250x100+100+100")
 
         # Initialize database operations
@@ -37,7 +40,8 @@ class PlaylistGUI:
             # Close the playlist creation window
             self.root.destroy()
 
+
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     playlist_gui = PlaylistGUI(root, callback=None)  # Pass the callback function if needed
     root.mainloop()

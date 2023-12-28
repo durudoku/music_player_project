@@ -1,6 +1,7 @@
 import tkinter as tk
 import pygame
 from PIL import Image, ImageTk
+import customtkinter as ctk
 
 
 class AudioPlayer:
@@ -8,6 +9,7 @@ class AudioPlayer:
         self.root = root
         self.root.title("Audio Player")
         self.root.geometry("300x300+100+100")
+        self.root.iconbitmap("icons/music.ico")
 
         self.main_page_app = main_page_app
 
@@ -26,16 +28,29 @@ class AudioPlayer:
         self.image_label = tk.Label(root, image=self.photo)
         self.image_label.pack(padx=10, pady=10)
 
-        stop_button = tk.Button(root, text="Stop", command=self.stop_song)
-        stop_button.pack(pady=10)
+        img_pause = ctk.CTkImage(Image.open("button_images/pause.png"))
+        img_play = ctk.CTkImage(Image.open("button_images/play.png"))
+        img_rewind = ctk.CTkImage(Image.open("button_images/rewind.png"))
+        img_volume_off = ctk.CTkImage(Image.open("button_images/volume-off.png"))
+        img_volume_on = ctk.CTkImage(Image.open("button_images/volume-on.png"))
 
-        restart_button = tk.Button(root, text="Restart", command=self.restart)
+
+        pause_button = ctk.CTkButton(root, text="Pause", image=img_pause, command=self.pause_song)
+        pause_button.pack(pady=10)
+
+        unpause_button = ctk.CTkButton(root, text="Unpause", image=img_play, command=self.unpause_song)
+        unpause_button.pack(pady=10)
+
+        restart_button = ctk.CTkButton(root, text="Restart", image=img_rewind, command=self.restart)
         restart_button.pack(pady=10)
 
         root.protocol("WM_DELETE_WINDOW", self.on_close)
 
-    def stop_song(self):
-        pygame.mixer.music.stop()
+    def pause_song(self):
+        pygame.mixer.music.pause()
+
+    def unpause_song(self):
+        pygame.mixer.music.unpause()
 
     def restart(self):
         pygame.mixer.music.play()
@@ -53,7 +68,7 @@ class AudioPlayer:
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     file_path = "songs/joga.mp3"  # Provide a default song path
     audio_player = AudioPlayer(root, file_path, main_page_app=None)  # Set main_page_app to None initially
     root.mainloop()

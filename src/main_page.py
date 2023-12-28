@@ -4,14 +4,14 @@ from database import Database
 from playlist import PlaylistGUI
 from src.audio_player import AudioPlayer
 from src.search_song import SearchSongApp
-
+import customtkinter as ctk
 
 class MainPageGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Music Player")
         self.root.geometry("900x300+100+100")
-        self.root.iconbitmap("music.ico")
+        self.root.iconbitmap("icons/music.ico")
         self.db = Database()
         self.setup_ui()
         self.populate_playlists()
@@ -162,6 +162,6 @@ class MainPageGUI:
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     main_page_gui = MainPageGUI(root)
     root.mainloop()
