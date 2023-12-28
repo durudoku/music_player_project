@@ -15,7 +15,7 @@ class LoginGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Login")
-        self.root.geometry("250x300+100+100")
+        #self.root.geometry("250x300+100+100")
         self.root.iconbitmap("icons/music.ico")
         self.setup_ui()
         self.db = Database()
@@ -25,27 +25,29 @@ class LoginGUI:
         self.selected_language = tk.StringVar(value="en")
         self.i18n = langpack.I18N(self.selected_language.get())
 
-        self.label_login = ctk.CTkLabel(root, text=self.i18n.label_login)
-        self.label_login.place(x=100, y=30)
+        self.label_login = ctk.CTkLabel(self.root, text=self.i18n.label_login)
+        self.label_login.grid(column=0, row=0, columnspan=2, pady=15)
 
-        self.label_email = ctk.CTkLabel(root, text=self.i18n.label_email)
-        self.label_email.place(x=10, y=60)
-        self.entry_email = ctk.CTkEntry(root)
-        self.entry_email.place(x=80, y=60)
+        self.label_email = ctk.CTkLabel(self.root, text=self.i18n.label_email)
+        self.label_email.grid(column=0, row=1, padx=15, pady=(0, 15), sticky="w")
 
-        self.label_password = ctk.CTkLabel(root, text=self.i18n.label_password)
-        self.label_password.place(x=10, y=100)
-        self.entry_password = ctk.CTkEntry(root, show="*")
-        self.entry_password.place(x=80, y=100)
+        self.entry_email = ctk.CTkEntry(self.root)
+        self.entry_email.grid(column=1, row=1, padx=15, pady=(0, 15), sticky="w")
 
-        self.button_login = ctk.CTkButton(root, text=self.i18n.button_login, command=self.login)
-        self.button_login.place(x=60, y=140)
+        self.label_password = ctk.CTkLabel(self.root, text=self.i18n.label_password)
+        self.label_password.grid(column=0, row=3, padx=15, pady=(0, 15), sticky="w")
 
-        self.label_signup = ctk.CTkLabel(root, text=self.i18n.label_signup)
-        self.label_signup.place(x=50, y=180)
+        self.entry_password = ctk.CTkEntry(self.root, show="*")
+        self.entry_password.grid(column=1, row=3, padx=15, pady=(0, 15), sticky="w")
 
-        self.button_signup = ctk.CTkButton(root, text=self.i18n.button_signup, command=self.go_to_signup)
-        self.button_signup.place(x=60, y=210)
+        self.button_login = ctk.CTkButton(self.root, text=self.i18n.button_login, command=self.login)
+        self.button_login.grid(column=0, row=4, columnspan=2, padx=15, pady=(0, 15), sticky="we")
+
+        self.label_already_have_account = ctk.CTkLabel(self.root, text=self.i18n.label_already_have_account)
+        self.label_already_have_account.grid(column=0, row=5, columnspan=2, pady=(15, 5))
+
+        self.button_signup = ctk.CTkButton(self.root, text=self.i18n.button_signup, command=self.go_to_signup)
+        self.button_signup.grid(column=0, row=6, columnspan=2, padx=15, pady=(0, 15))
 
         self.context_menu = tk.Menu(self.root, tearoff=False)
         self.context_menu.add_radiobutton(label="English", variable=self.selected_language, value="en",
@@ -65,7 +67,7 @@ class LoginGUI:
         self.label_email.configure(text=self.i18n.label_email)
         self.label_password.configure(text=self.i18n.label_password)
         self.button_login.configure(text=self.i18n.button_login)
-        self.label_signup.configure(text=self.i18n.label_signup)
+        self.label_already_have_account.configure(text=self.i18n.label_already_have_account)
         self.button_signup.configure(text=self.i18n.button_signup)
 
     def login(self):

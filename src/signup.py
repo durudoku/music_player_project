@@ -9,11 +9,10 @@ class SignUpGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Sign Up")
-        self.root.geometry("250x320+100+100")
         self.root.iconbitmap("icons/music.ico")
 
-        self.label_welcome = ctk.CTkLabel(root, text="Sign Up")
-        self.label_welcome.place(x=100, y=30)
+        self.label_signup = ctk.CTkLabel(root, text="Sign Up")
+        self.label_signup.place(x=100, y=30)
 
         self.label_name = ctk.CTkLabel(root, text="Name:")
         self.label_name.place(x=10, y=60)
@@ -30,8 +29,8 @@ class SignUpGUI:
         self.entry_password = ctk.CTkEntry(root, show="*")
         self.entry_password.place(x=80, y=140)
 
-        self.sign_up_button = ctk.CTkButton(root, text="Sign Up", command=self.sign_up)
-        self.sign_up_button.place(x=60, y=180)
+        self.button_signup = ctk.CTkButton(root, text="Sign Up", command=self.sign_up)
+        self.button_signup.place(x=60, y=180)
 
         self.label_message = ctk.CTkLabel(root, text="")
         self.label_message.place(x=50, y=210)
@@ -39,8 +38,8 @@ class SignUpGUI:
         self.label_login = ctk.CTkLabel(root, text="You already have an account?")
         self.label_login.place(x=40, y=250)
 
-        self.login_button = ctk.CTkButton(root, text="Login", command=self.go_to_login)
-        self.login_button.place(x=60, y=280)
+        self.button_login = ctk.CTkButton(root, text="Login", command=self.go_to_login)
+        self.button_login.place(x=60, y=280)
 
         self.db = Database()
 
