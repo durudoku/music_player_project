@@ -74,9 +74,22 @@ class SignUpGUI:
                 messagebox.showinfo("Success", "Account created successfully.")
 
     def go_to_login(self):
-        self.root.destroy()
+        from login import LoginGUI
+
+        # Hide the main window
+        self.root.withdraw()
+
+        # Create the login window
         login_root = ctk.CTk()
         login_gui = LoginGUI(login_root)
+
+        def on_login_window_close():
+            login_root.withdraw()  # Hide the login window
+            login_root.after(1, login_root.destroy)  # Schedule destruction after a short delay
+            self.root.deiconify()  # Bring back the main window
+
+        # Use the protocol on the Tk instance of the Toplevel window
+        login_root.protocol("WM_DELETE_WINDOW", on_login_window_close)
         login_root.mainloop()
 
 

@@ -1,10 +1,11 @@
 import tkinter as tk
-from tkinter import scrolledtext, ttk
+from tkinter import ttk
 from database import Database
 from playlist import PlaylistGUI
 from src.audio_player import AudioPlayer
 from src.search_song import SearchSongApp
 import customtkinter as ctk
+
 
 class MainPageGUI:
     def __init__(self, root):
@@ -18,10 +19,11 @@ class MainPageGUI:
         self.populate_songs()
         self.current_audio_player = None
         self.selected_playlist_id = None
+        self.root.protocol("WM_DELETE_WINDOW", self.on_main_page_close)
 
     def setup_ui(self):
         # Playlists
-        self.label_playlists = tk.Label(self.root, text="Playlists")
+        self.label_playlists = ctk.CTkLabel(self.root, text="Playlists")
         self.label_playlists.place(x=10, y=30)
 
         self.playlist_tree = ttk.Treeview(self.root, columns=("ID", "Name"), show="headings", selectmode="browse")
@@ -31,14 +33,14 @@ class MainPageGUI:
         self.playlist_tree.column("Name", width=200)
         self.playlist_tree.place(x=10, y=50)
 
-        self.button_playlist_add = ttk.Button(self.root, text="+", width=5, command=self.show_add_playlist_gui)
+        self.button_playlist_add = ctk.CTkButton(self.root, text="+", width=5, command=self.show_add_playlist_gui)
         self.button_playlist_add.place(x=270, y=65)
 
-        self.button_playlist_remove = ttk.Button(self.root, text="-", width=5, command=self.remove_selected_playlist)
+        self.button_playlist_remove = ctk.CTkButton(self.root, text="-", width=5, command=self.remove_selected_playlist)
         self.button_playlist_remove.place(x=270, y=170)
 
         # Songs
-        self.label_songs = tk.Label(self.root, text="Songs")
+        self.label_songs =  ctk.CTkLabel(self.root, text="Songs")
         self.label_songs.place(x=330, y=30)
 
         self.song_tree = ttk.Treeview(self.root, columns=("ID", "Track", "Artist", "Album", "Duration"), show="headings")
@@ -56,14 +58,18 @@ class MainPageGUI:
 
         self.song_tree.place(x=330, y=50)
 
-        self.button_song_add = ttk.Button(self.root, text="+", width=5, command=self.show_add_song_gui)
+        self.button_song_add = ctk.CTkButton(self.root, text="+", width=5, command=self.show_add_song_gui)
         self.button_song_add.place(x=800, y=65)
 
-        self.button_song_remove = ttk.Button(self.root, text="-", width=5, command=self.remove_selected_songs)
+        self.button_song_remove = ctk.CTkButton(self.root, text="-", width=5, command=self.remove_selected_songs)
         self.button_song_remove.place(x=800, y=170)
 
         self.song_tree.bind("<Double-1>", self.open_song_gui)
         self.playlist_tree.bind("<ButtonRelease-1>", lambda event: self.load_songs_for_selected_playlist())
+
+    def on_main_page_close(self):
+        if self.root.winfo_exists():
+            self.root.destroy()
 
     def populate_playlists(self):
         # Clear existing content in the playlist treeview
@@ -97,11 +103,8 @@ class MainPageGUI:
                 self.song_tree.insert("", "end", values=song_details)
 
     def show_add_playlist_gui(self):
-        # Create a new window for adding a playlist
         add_playlist_window = tk.Toplevel(self.root)
         add_playlist_window.title("Add Playlist")
-
-        # Create an instance of PlaylistGUI
         playlist_gui = PlaylistGUI(add_playlist_window, callback=self.populate_playlists)
 
     def show_add_song_gui(self):
@@ -123,10 +126,7 @@ class MainPageGUI:
             # Get the playlist ID from the selected item
             playlist_id = self.playlist_tree.item(selected_item, "values")[0]
 
-            # Remove the playlist from the database
             self.db.remove_playlist(playlist_id)
-
-            # Update the playlist treeview
             self.populate_playlists()
 
     def load_songs_for_selected_playlist(self):
@@ -157,8 +157,6 @@ class MainPageGUI:
 
             # Update the currently open audio player window
             self.current_audio_player = audio_player
-
-
 
 
 if __name__ == "__main__":

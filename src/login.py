@@ -43,28 +43,64 @@ class LoginGUI:
         password = self.entry_password.get()
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-        if(email == "admin" and password == "admin"):
+        if email == "admin" and password == "admin":
             messagebox.showinfo("Admin", "Directing to Admin Page.")
-            self.root.destroy()
+            self.root.withdraw()  # Hide the current login window
             admin_page = ctk.CTk()
             AdminPage(admin_page)
+            admin_page.protocol("WM_DELETE_WINDOW", lambda: self.on_admin_page_close(admin_page))
             admin_page.mainloop()
         else:
             if self.db.check_credentials(email, hashed_password):
                 messagebox.showinfo("Success", "Login successful.")
-                self.root.destroy()
-                main_page_root = tk.Tk()
-                MainPageGUI(main_page_root)
-                main_page_root.mainloop()
+                self.root.withdraw()  # Hide the current login window
+                self.go_to_main_page()
             else:
                 messagebox.showerror("Error", "Invalid email or password.")
 
+    def on_admin_page_close(self, admin_page):
+        admin_page.withdraw()  # Hide the admin page window
+        admin_page.after(1, admin_page.destroy)  # Schedule destruction after a short delay
+        self.root.deiconify()  # Bring back the login window
+
+    def go_to_main_page(self):
+        from main_page import MainPageGUI
+
+        # Hide the login window
+        self.root.withdraw()
+
+        # Create the main page window
+        main_page_root = ctk.CTk()
+        main_page_gui = MainPageGUI(main_page_root)
+
+        def on_main_page_close():
+            main_page_root.withdraw()  # Hide the main page window
+            main_page_root.after(1, main_page_root.destroy)  # Schedule destruction after a short delay
+            self.root.deiconify()  # Bring back the login window
+
+        # Use the protocol on the Tk instance of the Toplevel window
+        main_page_root.protocol("WM_DELETE_WINDOW", on_main_page_close)
+        main_page_root.mainloop()
+
     def go_to_signup(self):
-        from signup import SignUpGUI  # Import the class only when needed
-        self.root.destroy()
+        from signup import SignUpGUI
+
+        # Hide the main window
+        self.root.withdraw()
+
+        # Create the signup window
         signup_root = ctk.CTk()
         signup_gui = SignUpGUI(signup_root)
+
+        def on_signup_window_close():
+            signup_root.withdraw()  # Hide the signup window
+            signup_root.after(1, signup_root.destroy)  # Schedule destruction after a short delay
+            self.root.deiconify()  # Bring back the main window
+
+        # Use the protocol on the Tk instance of the Toplevel window
+        signup_root.protocol("WM_DELETE_WINDOW", on_signup_window_close)
         signup_root.mainloop()
+
 
 if __name__ == "__main__":
     root = ctk.CTk()
