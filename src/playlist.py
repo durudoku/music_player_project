@@ -8,7 +8,6 @@ class PlaylistGUI:
         self.root = root
         self.root.title("Create Playlist")
         self.root.iconbitmap("icons/music.ico")
-        self.root.geometry("250x100+100+100")
 
         # Initialize database operations
         self.db = Database()
@@ -18,13 +17,13 @@ class PlaylistGUI:
 
         # Create GUI elements
         self.playlist_name_label = ctk.CTkLabel(root, text="Playlist Name:")
-        self.playlist_name_label.place(x=10, y=10)
+        self.playlist_name_label.grid(column=0, row=0, padx=15, pady=15, sticky="w")
 
         self.playlist_name_entry = ctk.CTkEntry(root)
-        self.playlist_name_entry.place(x=100, y=10)
+        self.playlist_name_entry.grid(column=1, row=0, padx=15, pady=15, sticky="w")
 
         self.create_button = ctk.CTkButton(root, text="Create Playlist", command=self.create_playlist)
-        self.create_button.place(x=60, y=50)
+        self.create_button.grid(column=0, row=1, columnspan=2, padx=15, pady=(0, 15), sticky="we")
 
     def create_playlist(self):
         playlist_name = self.playlist_name_entry.get()

@@ -20,9 +20,11 @@ class I18N:
         self.label_email = lang_data["label_email"]
         self.label_password = lang_data["label_password"]
         self.button_login = lang_data["button_login"]
-        self.label_already_have_account = lang_data["label_already_have_account"]
+        self.label_dont_have_account = lang_data["label_dont_have_account"]
         self.button_signup = lang_data["button_signup"]
-
+        self.label_signup = lang_data["label_signup"]
+        self.label_name = lang_data["label_name"]
+        self.label_already_have_account = lang_data["label_already_have_account"]
 
     @staticmethod
     def get_available_languages():

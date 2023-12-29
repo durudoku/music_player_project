@@ -10,38 +10,39 @@ class SignUpGUI:
         self.root = root
         self.root.title("Sign Up")
         self.root.iconbitmap("icons/music.ico")
-
-        self.label_signup = ctk.CTkLabel(root, text="Sign Up")
-        self.label_signup.place(x=100, y=30)
-
-        self.label_name = ctk.CTkLabel(root, text="Name:")
-        self.label_name.place(x=10, y=60)
-        self.entry_name = ctk.CTkEntry(root)
-        self.entry_name.place(x=80, y=60)
-
-        self.label_email = ctk.CTkLabel(root, text="Email:")
-        self.label_email.place(x=10, y=100)
-        self.entry_email = ctk.CTkEntry(root)
-        self.entry_email.place(x=80, y=100)
-
-        self.label_password = ctk.CTkLabel(root, text="Password:")
-        self.label_password.place(x=10, y=140)
-        self.entry_password = ctk.CTkEntry(root, show="*")
-        self.entry_password.place(x=80, y=140)
-
-        self.button_signup = ctk.CTkButton(root, text="Sign Up", command=self.sign_up)
-        self.button_signup.place(x=60, y=180)
-
-        self.label_message = ctk.CTkLabel(root, text="")
-        self.label_message.place(x=50, y=210)
-
-        self.label_login = ctk.CTkLabel(root, text="You already have an account?")
-        self.label_login.place(x=40, y=250)
-
-        self.button_login = ctk.CTkButton(root, text="Login", command=self.go_to_login)
-        self.button_login.place(x=60, y=280)
-
+        self.setup_ui()
         self.db = Database()
+
+    def setup_ui(self):
+        self.label_signup = ctk.CTkLabel(self.root, text="Sign Up")
+        self.label_signup.grid(column=0, row=0, columnspan=2, pady=15)
+
+        self.label_name = ctk.CTkLabel(self.root, text="Name:")
+        self.label_name.grid(column=0, row=1, padx=15, pady=(0, 15), sticky="w")
+        self.entry_name = ctk.CTkEntry(self.root)
+        self.entry_name.grid(column=1, row=1, padx=15, pady=(0, 15), sticky="w")
+
+        self.label_email = ctk.CTkLabel(self.root, text="Email:")
+        self.label_email.grid(column=0, row=3, padx=15, pady=(0, 15), sticky="w")
+        self.entry_email = ctk.CTkEntry(self.root)
+        self.entry_email.grid(column=1, row=3, padx=15, pady=(0, 15), sticky="w")
+
+        self.label_password = ctk.CTkLabel(self.root, text="Password:")
+        self.label_password.grid(column=0, row=4, padx=15, pady=(0, 15), sticky="w")
+        self.entry_password = ctk.CTkEntry(self.root, show="*")
+        self.entry_password.grid(column=1, row=4, padx=15, pady=(0, 15), sticky="w")
+
+        self.button_signup = ctk.CTkButton(self.root, text="Sign Up", command=self.sign_up)
+        self.button_signup.grid(column=0, row=5, columnspan=2, padx=15, pady=(0, 15))
+
+        self.label_message = ctk.CTkLabel(self.root, text="")
+        self.label_message.grid(column=0, row=6, columnspan=2, padx=15, pady=(0, 15))
+
+        self.label_already_have_account = ctk.CTkLabel(self.root, text="You already have an account?")
+        self.label_already_have_account.grid(column=0, row=7, columnspan=2, padx=15, pady=(0, 15))
+
+        self.button_login = ctk.CTkButton(self.root, text="Login", command=self.go_to_login)
+        self.button_login.grid(column=0, row=8, columnspan=2, padx=15, pady=(0, 15))
 
     def sign_up(self):
         name = self.entry_name.get()
@@ -73,7 +74,7 @@ class SignUpGUI:
 
     def go_to_login(self):
         from login import LoginGUI
-        self.root.destroy()
+        self.root.withdraw()
         login_root = ctk.CTk()
         login_gui = LoginGUI(login_root)
 

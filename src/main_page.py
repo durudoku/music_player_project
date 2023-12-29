@@ -151,11 +151,10 @@ class MainPageGUI:
             if self.current_audio_player:
                 self.current_audio_player.on_close()
 
-            # Open the new audio player window and pass the reference to the MainPageApp instance
             audio_player_root = tk.Toplevel(self.root)
-            audio_player = AudioPlayer(audio_player_root, file_path=file_path, main_page_app=self, track_name=track_name)
+            audio_player = AudioPlayer(audio_player_root, file_path=file_path,
+                                       main_page_app=self, track_name=track_name)
 
-            # Update the currently open audio player window
             self.current_audio_player = audio_player
 
 

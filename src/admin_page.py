@@ -13,11 +13,11 @@ class AdminPage:
         self.root.geometry("200x100+100+100")
         self.root.iconbitmap("icons/music.ico")
 
-        self.add_song_button = ttk.Button(root, text="Add Song", command=self.add_song_page)
-        self.add_song_button.pack()
+        self.add_song_button = ctk.CTkButton(root, text="Add Song", command=self.add_song_page)
+        self.add_song_button.pack(pady=15)
 
-        self.edit_user_button = ttk.Button(root, text="Edit Users", command=self.edit_user_page)
-        self.edit_user_button.pack()
+        self.edit_user_button = ctk.CTkButton(root, text="Edit Users", command=self.edit_user_page)
+        self.edit_user_button.pack(pady=(0,15))
 
     def add_song_page(self):
         add_song = ctk.CTk()

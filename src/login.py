@@ -43,8 +43,8 @@ class LoginGUI:
         self.button_login = ctk.CTkButton(self.root, text=self.i18n.button_login, command=self.login)
         self.button_login.grid(column=0, row=4, columnspan=2, padx=15, pady=(0, 15), sticky="we")
 
-        self.label_already_have_account = ctk.CTkLabel(self.root, text=self.i18n.label_already_have_account)
-        self.label_already_have_account.grid(column=0, row=5, columnspan=2, pady=(15, 5))
+        self.label_dont_have_account = ctk.CTkLabel(self.root, text=self.i18n.label_dont_have_account)
+        self.label_dont_have_account.grid(column=0, row=5, columnspan=2, pady=(15, 5))
 
         self.button_signup = ctk.CTkButton(self.root, text=self.i18n.button_signup, command=self.go_to_signup)
         self.button_signup.grid(column=0, row=6, columnspan=2, padx=15, pady=(0, 15))
@@ -67,7 +67,7 @@ class LoginGUI:
         self.label_email.configure(text=self.i18n.label_email)
         self.label_password.configure(text=self.i18n.label_password)
         self.button_login.configure(text=self.i18n.button_login)
-        self.label_already_have_account.configure(text=self.i18n.label_already_have_account)
+        self.label_dont_have_account.configure(text=self.i18n.label_dont_have_account)
         self.button_signup.configure(text=self.i18n.button_signup)
 
     def login(self):
@@ -101,11 +101,7 @@ class LoginGUI:
 
     def go_to_main_page(self):
         from main_page import MainPageGUI
-
-        # Hide the login window
         self.root.withdraw()
-
-        # Create the main page window
         main_page_root = ctk.CTk()
         main_page_gui = MainPageGUI(main_page_root)
 
